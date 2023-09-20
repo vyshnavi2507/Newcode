@@ -29,3 +29,5 @@ GROUP BY
   SIFT,
   PolyPhen
 ORDER BY num DESC
+Ascending by 
+
