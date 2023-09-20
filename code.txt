@@ -30,4 +30,6 @@ GROUP BY
   PolyPhen
 ORDER BY num DESC
 Ascending by 
+loreal,
+
 
