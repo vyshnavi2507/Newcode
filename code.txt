@@ -1,0 +1,31 @@
+WITH temp1 AS (
+   SELECT
+     sample_barcode_tumor,
+     Hugo_Symbol,
+     Variant_Class,
+     Variant_item,
+     SIFT,
+     PolyPhen
+   FROM `isb-cgc-bq.TCGA_versioned.somatic_mutation_hg38_gdc_r10`
+   GROUP BY
+     sample_barcode_tumor,
+     Hugo_Symbol,
+     Variant_Classification,
+     Variant_Type,
+     SIFT,
+     PolyPhen)
+SELECT
+  COUNT(*) AS num,
+  Hugo_Symbol,
+  Variant_Class,
+  Variant_Type;
+  SIFT,
+  PolyPhen
+FROM temp1
+GROUP BY
+  Hugo_Symbol,
+  Variant_Classification,
+  Variant_Type,
+  SIFT,
+  PolyPhen
+ORDER BY num DESC
