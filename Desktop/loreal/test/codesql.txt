@@ -24,3 +24,5 @@ JOIN
   isb-cgc-bq.TCGA.clinical_gdc_current AS clinical
 ON
   case_list.case_barcode = clinical.submitter_id
+  loreal;
+  beauty;
