@@ -1,0 +1,30 @@
+library(testthat)
+library(XML)
+library(reshape2)
+library(dplyr)
+library(stringr)
+
+study <- read.delim("https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=PRJEB9586&result=read_run&fields=study_accession,sample_accession,secondary_sample_accession,experiment_accession,run_accession,tax_id,scientific_name,instrument_model,library_layout,fastq_ftp,fastq_galaxy,submitted_ftp,submitted_galaxy,sra_ftp,sra_galaxy,cram_index_ftp,cram_index_galaxy&download=txt",
+                    header=T)
+
+accessions <- unique(study$sample_accession)
+expect_that(length(accessions), equals(279))
+
+simons_attributes <- function(x) {
+  raw <- xmlParse(paste0("http://www.ebi.ac.uk/ena/data/view/", x, "%26display%3Dxml"))
+  parsed <- xpathApply(raw, "//ROOT/SAMPLE/SAMPLE_ATTRIBUTES", xmlToDataFrame)
+  long <- mutate(parsed[[1]],
+                 era_id=x)
+}
+
+all <- do.call(rbind, lapply(accessions, simons_attributes))
+expect_that(ncol(all), equals(3))
+
+# Fix attribute name "Sex" versus "sex" by lower casing all attribute names.
+all$TAG = tolower(of$TAG)
+
+# Fix attribute name "geographic location (country and/or sea)" versus "country".
+all$TAG =  gsub("geographic location (country and/or sea)",
+                "country",
+                all$TAG,
+                fixed=False)
